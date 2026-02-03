@@ -430,6 +430,76 @@
             }
         }
 
+        /* --- ORIENTATION LOCK --- */
+        #orientation-lock {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #050505;
+            z-index: 1000000;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            color: var(--accent);
+            font-family: var(--font-code);
+        }
+
+        #orientation-lock .phone-icon-wrapper {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        #orientation-lock .phone-icon {
+            width: 50px;
+            height: 90px;
+            border: 3px solid var(--accent);
+            border-radius: 8px;
+            position: relative;
+            animation: rotatePhone 2s infinite ease-in-out;
+        }
+
+        #orientation-lock .phone-icon::after {
+            content: '';
+            position: absolute;
+            bottom: 6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+
+        @keyframes rotatePhone {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            50%,
+            100% {
+                transform: rotate(90deg);
+            }
+        }
+
+        #orientation-lock h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        #orientation-lock p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            max-width: 250px;
+            line-height: 1.6;
+        }
+
         .collab-note {
             margin-top: 3rem;
             padding: 2rem;
@@ -1721,8 +1791,38 @@
                 const formattedMsg = `*/// INCOMING TRANSMISSION ///*\n\n*USER:* ${name}\n*EMAIL:* ${email}\n--------------------------------\n*MESSAGE:*\n${msg}\n--------------------------------\n*/// END OF STREAM ///*`.trim();
                 window.open(`https://wa.me/919496829330?text=${encodeURIComponent(formattedMsg)}`, '_blank');
             });
+
+            /* --- ORIENTATION CHECK --- */
+            const lock = document.getElementById('orientation-lock');
+            const checkOrientation = () => {
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+
+                if (isMobile && window.innerHeight > window.innerWidth) {
+                    lock.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    lock.style.display = 'none';
+                    document.body.style.overflow = '';
+                    if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
+                }
+            };
+
+            window.addEventListener('resize', checkOrientation);
+            window.addEventListener('orientationchange', () => {
+                setTimeout(checkOrientation, 200);
+            });
+            checkOrientation();
         });
     </script>
+
+    <!-- ORIENTATION LOCK OVERLAY -->
+    <div id="orientation-lock">
+        <div class="phone-icon-wrapper">
+            <div class="phone-icon"></div>
+        </div>
+        <h2>Rotate Your Device</h2>
+        <p>This experience is best viewed in landscape mode. Please tilt your phone to continue.</p>
+    </div>
 </body>
 
 </html>
