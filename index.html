@@ -43,6 +43,14 @@
             cursor: none;
         }
 
+        @media (max-width: 1024px) {
+            *,
+            *::before,
+            *::after {
+                cursor: auto !important;
+            }
+        }
+
         body {
             background-color: var(--bg);
             color: var(--text-main);
@@ -84,21 +92,28 @@
             top: 0;
             left: 0;
             pointer-events: none;
-            z-index: 9999;
-            mix-blend-mode: exclusion;
+            z-index: 10001;
+            mix-blend-mode: difference;
         }
 
         .cursor-circle {
             width: 40px;
             height: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1.5px solid #fff;
             border-radius: 50%;
             position: fixed;
             top: 0;
             left: 0;
             pointer-events: none;
-            z-index: 9998;
-            transition: transform 0.1s;
+            z-index: 10000;
+            mix-blend-mode: difference;
+            transition: transform 0.15s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+        }
+
+        @media (max-width: 1024px) {
+            .cursor-dot, .cursor-circle, #cursor-canvas {
+                display: none !important;
+            }
         }
 
         /* --- TYPOGRAPHY --- */
@@ -430,74 +445,47 @@
             }
         }
 
-        /* --- ORIENTATION LOCK --- */
-        #orientation-lock {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #050505;
-            z-index: 1000000;
+        /* --- MOBILE SCROLL HINT --- */
+        .mobile-scroll-hint {
             display: none;
+            position: absolute;
+            bottom: 10%;
+            left: 5vw;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 2rem;
+            gap: 1rem;
             color: var(--accent);
+            z-index: 20;
+        }
+
+        .hint-text {
             font-family: var(--font-code);
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
-        #orientation-lock .phone-icon-wrapper {
-            margin-bottom: 2rem;
+        .hint-line {
+            width: 60px;
+            height: 1px;
+            background: rgba(212, 175, 55, 0.3);
             position: relative;
         }
 
-        #orientation-lock .phone-icon {
-            width: 50px;
-            height: 90px;
-            border: 3px solid var(--accent);
-            border-radius: 8px;
-            position: relative;
-            animation: rotatePhone 2s infinite ease-in-out;
-        }
-
-        #orientation-lock .phone-icon::after {
+        .hint-line::after {
             content: '';
             position: absolute;
-            bottom: 6px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 8px;
-            height: 8px;
+            top: 0;
+            left: 0;
+            width: 30%;
+            height: 100%;
             background: var(--accent);
-            border-radius: 50%;
+            animation: hintMove 2s infinite ease-in-out;
         }
 
-        @keyframes rotatePhone {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            50%,
-            100% {
-                transform: rotate(90deg);
-            }
-        }
-
-        #orientation-lock h2 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-        }
-
-        #orientation-lock p {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            max-width: 250px;
-            line-height: 1.6;
+        @keyframes hintMove {
+            0% { transform: translateX(0); width: 10%; }
+            50% { transform: translateX(200%); width: 40%; }
+            100% { transform: translateX(500%); width: 10%; }
         }
 
         .collab-note {
@@ -1003,33 +991,127 @@
         }
 
         @media (max-width: 768px) {
+            .mobile-scroll-hint {
+                display: flex;
+            }
 
-            .h-scroll-container,
-            .h-track {
+            .h-scroll-container {
                 display: block;
-                height: auto;
+                height: 80vh;
                 width: 100%;
-                overflow: visible;
+                overflow-x: auto;
+                overflow-y: hidden;
+                scroll-snap-type: x mandatory;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+            }
+
+            .h-scroll-container::-webkit-scrollbar {
+                display: none;
+            }
+
+            .h-track {
+                display: flex;
+                flex-wrap: nowrap;
+                width: max-content;
+                height: 100%;
             }
 
             .h-panel {
-                width: 100%;
-                height: 80vh;
-                border-right: none;
-                border-bottom: 1px solid var(--line);
+                width: 100vw;
+                height: 100%;
+                border-right: 1px solid var(--line);
+                scroll-snap-align: center;
+                flex-shrink: 0;
+                padding: 0;
+            }
+
+            .intro-panel {
+                width: 100vw;
+                padding: 0 10vw;
+                align-items: flex-start;
+                justify-content: center;
             }
 
             .card {
-                width: 90%;
+                width: 85vw;
                 height: 60vh;
+                border-radius: 20px;
+                background: rgba(255, 255, 255, 0.02);
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .card-info {
+                padding: 1.5rem;
+                transform: translateY(0);
+                opacity: 1;
+                background: linear-gradient(to top, rgba(0,0,0,0.95) 40%, transparent);
+            }
+
+            .card-img {
+                filter: grayscale(0.8) brightness(0.4);
+                transition: filter 0.8s ease;
+            }
+
+            .card.active .card-img {
+                filter: grayscale(0) brightness(0.8);
+            }
+
+            #projects-wrapper {
+                margin: 5rem 0; /* More spacing */
+            }
+
+            .project-title {
+                font-size: 0.75rem; /* Drastically reduced */
+                margin-top: 0.2rem;
+                letter-spacing: 0.5px;
+            }
+
+            .description {
+                font-size: 0.5rem; /* Drastically reduced */
+                line-height: 1.15;
+                margin-top: 0.2rem;
+                color: #555;
+            }
+
+            .card-meta span {
+                font-size: 0.4rem;
+                padding: 1px 3px;
+                letter-spacing: 0.5px;
+            }
+
+            .tech-stack-list {
+                font-size: 0.45rem;
+                gap: 0.3rem;
+                margin-top: 0.3rem;
+            }
+
+            .btn-link {
+                padding: 0.25rem 0.6rem;
+                font-size: 0.45rem;
+                margin-top: 0.4rem;
+            }
+
+            .intro-panel h2 {
+                font-size: 1.4rem !important; /* Smaller header */
+            }
+
+            .intro-panel .mono {
+                font-size: 0.5rem !important;
             }
 
             .hero-title {
                 font-size: 15vw;
+                margin-top: 2rem;
             }
 
             .nav {
                 padding: 1.5rem;
+            }
+
+            .nav .mono {
+                font-size: 0.55rem !important;
             }
 
             .process-row {
@@ -1268,18 +1350,24 @@
     </section>
 
     <!-- 7. PROJECTS (HORIZONTAL) -->
-    <div id="projects-wrapper" style="overflow: hidden;">
+    <section id="projects-wrapper" style="overflow: hidden; padding: 0; border-bottom: 1px solid var(--line);">
         <div class="h-scroll-container">
             <div class="h-track">
                 <div class="h-panel intro-panel">
                     <h2 style="font-size: 4rem;">Selected<br>Works</h2>
                     <div class="mono" style="margin-top: 2rem;">(04) PROJECTS</div>
                     <div class="mono" style="margin-top: 0.5rem;">→ SCROLL TO EXPLORE</div>
+                    
+                    <!-- Mobile Scroll Hint -->
+                    <div class="mobile-scroll-hint">
+                        <span class="hint-text">Scroll Right</span>
+                        <div class="hint-line"></div>
+                    </div>
                 </div>
 
                 <div class="h-panel">
                     <div class="card">
-                        <img src="./tisk-ems.png" class="card-img" alt="TISK EMS">
+                        <img src="./Screenshot (7).png" class="card-img" alt="TISK EMS">
                         <div class="card-info">
                             <div class="card-meta"><span class="mono tag">EDUCATION • ERP</span><span
                                     class="mono tag">2025</span></div>
@@ -1288,19 +1376,19 @@
                                 featuring admissions, disclosures, TC register, academics, events, and responsive UI.
                             </p>
                             <div class="tech-stack-list"><span>HTML</span><span>CSS</span><span>JavaScript</span></div>
-                            <a href="https://hsf237.github.io/tisk.edu.in/" class="btn-link">VIEW PROJECT →</a>
+                            <a href="https://www.tiskems.edu.in/" class="btn-link">VIEW PROJECT →</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="h-panel">
                     <div class="card">
-                        <img src="./elite-engine.png" class="card-img" alt="Elite Engine">
+                        <img src="./Screenshot (9).png" class="card-img" alt="Elite Engine">
                         <div class="card-info">
                             <div class="card-meta"><span class="mono tag">COMMERCE • MERN</span><span
                                     class="mono tag">2026</span></div>
                             <h3 class="project-title">Elite Engine</h3>
-                            <p class="description">A hyper-performance e-commerce engine with Razorpay integration, 
+                            <p class="description">A hyper-performance e-commerce engine with Razorpay integration,
                                 ultra-responsive category navigation, and production-grade security logic.</p>
                             <div class="tech-stack-list"><span>REACT</span><span>NODE</span><span>MONGODB</span></div>
                             <a href="https://elite-engine.vercel.app/" class="btn-link">VIEW PROJECT →</a>
@@ -1310,7 +1398,7 @@
 
                 <div class="h-panel">
                     <div class="card">
-                        <img src="./meridian-arch.png" class="card-img" alt="Meridian Arch Studio">
+                        <img src="./Screenshot (8).png" class="card-img" alt="Meridian Arch Studio">
                         <div class="card-info">
                             <div class="card-meta"><span class="mono tag">ARCHITECTURE</span><span
                                     class="mono tag">2024</span></div>
@@ -1342,7 +1430,7 @@
                 <div class="h-panel" style="width: 20vw;"></div>
             </div>
         </div>
-    </div>
+    </section>
 
     <!-- 8. EVOLUTION TIMELINE -->
     <section class="timeline-sec">
@@ -1479,7 +1567,8 @@
                 <span class="card-category">DIGITAL ARCHITECTURE</span>
                 <div class="card-stat">PRODUCTION GRADE</div>
                 <h3 class="card-title">Enterprise Web Solutions</h3>
-                <p class="card-desc">Developed institutional platforms, **Elite Commerce Engine**, and **School ERP systems**. Mastered automated logistics logic, payment security, and AI conversational systems.</p>
+                <p class="card-desc">Developed institutional platforms, **Elite Commerce Engine**, and **School ERP
+                    systems**. Mastered automated logistics logic, payment security, and AI conversational systems.</p>
             </div>
 
             <div class="registry-card span-4">
@@ -1791,37 +1880,30 @@
                 window.open(`https://wa.me/919496829330?text=${encodeURIComponent(formattedMsg)}`, '_blank');
             });
 
-            /* --- ORIENTATION CHECK --- */
-            const lock = document.getElementById('orientation-lock');
-            const checkOrientation = () => {
-                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
-
-                if (isMobile && window.innerHeight > window.innerWidth) {
-                    lock.style.display = 'flex';
-                    document.body.style.overflow = 'hidden';
-                } else {
-                    lock.style.display = 'none';
-                    document.body.style.overflow = '';
-                    if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
-                }
-            };
-
-            window.addEventListener('resize', checkOrientation);
-            window.addEventListener('orientationchange', () => {
-                setTimeout(checkOrientation, 200);
-            });
-            checkOrientation();
+            // Mobile Card Activation (Intersection Observer)
+            if (window.innerWidth <= 768) {
+                const observerOptions = {
+                    root: document.querySelector('.h-scroll-container'),
+                    threshold: 0.5
+                };
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        const card = entry.target.querySelector('.card');
+                        if (card) {
+                            if (entry.isIntersecting) {
+                                card.classList.add('active');
+                            } else {
+                                card.classList.remove('active');
+                            }
+                        }
+                    });
+                }, observerOptions);
+                document.querySelectorAll('.h-panel').forEach(panel => observer.observe(panel));
+            }
         });
     </script>
 
-    <!-- ORIENTATION LOCK OVERLAY -->
-    <div id="orientation-lock">
-        <div class="phone-icon-wrapper">
-            <div class="phone-icon"></div>
-        </div>
-        <h2>Rotate Your Device</h2>
-        <p>This experience is best viewed in landscape mode. Please tilt your phone to continue.</p>
-    </div>
+
 </body>
 
 </html>
