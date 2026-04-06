@@ -969,6 +969,67 @@
             color: var(--accent);
         }
 
+        /* --- ORIENTATION OVERLAY --- */
+        #orientation-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: var(--bg);
+            z-index: 100000;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            color: #fff;
+        }
+
+        #orientation-overlay .orientation-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        #orientation-overlay svg {
+            width: 80px;
+            height: 80px;
+            color: var(--accent);
+            animation: phoneRotate 2s infinite ease-in-out;
+        }
+
+        @keyframes phoneRotate {
+            0% { transform: rotate(0deg); }
+            50% { transform: rotate(-90deg); }
+            100% { transform: rotate(-90deg); }
+        }
+
+        #orientation-overlay h2 {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            margin: 0;
+        }
+
+        #orientation-overlay p {
+            font-family: var(--font-code);
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            max-width: 300px;
+        }
+
+        @media (max-width: 1024px) and (orientation: portrait) {
+            #orientation-overlay {
+                display: flex;
+            }
+            body {
+                overflow: hidden !important;
+            }
+        }
+
         /* --- MOBILE RESPONSIVENESS --- */
         @media (max-width: 900px) {
 
@@ -1151,6 +1212,15 @@
 </head>
 
 <body>
+
+    <!-- ORIENTATION OVERLAY -->
+    <div id="orientation-overlay">
+        <div class="orientation-content">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+            <h2>Please Rotate Device</h2>
+            <p>This experience is optimized for horizontal viewing. Kindly rotate your device for the best view.</p>
+        </div>
+    </div>
 
     <!-- CORE ELEMENTS -->
     <div class="scroll-progress"></div>
@@ -1648,8 +1718,17 @@
         gsap.registerPlugin(ScrollTrigger);
 
         const splitText = (el) => {
-            const text = el.innerText;
-            el.innerHTML = text.split("").map(char => `<span class="char-reveal"><span>${char === " " ? "&nbsp;" : char}</span></span>`).join("");
+            const words = el.innerText.split(" ");
+            let newHTML = "";
+            words.forEach((word, wordIndex) => {
+                newHTML += `<span style="display:inline-block; white-space:nowrap;">`;
+                newHTML += word.split("").map(char => `<span class="char-reveal"><span>${char}</span></span>`).join("");
+                newHTML += `</span>`;
+                if (wordIndex < words.length - 1) {
+                    newHTML += `<span class="char-reveal space"><span>&nbsp;</span></span>`;
+                }
+            });
+            el.innerHTML = newHTML;
         };
 
         window.addEventListener("load", () => {
