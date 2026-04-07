@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&family=Space+Grotesk:wght@300;500;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&family=Space+Grotesk:wght@300;500;700&family=Great+Vibes&display=swap"
         rel="stylesheet">
 
     <!-- GSAP for robust animations -->
@@ -44,6 +44,7 @@
         }
 
         @media (max-width: 1024px) {
+
             *,
             *::before,
             *::after {
@@ -111,7 +112,10 @@
         }
 
         @media (max-width: 1024px) {
-            .cursor-dot, .cursor-circle, #cursor-canvas {
+
+            .cursor-dot,
+            .cursor-circle,
+            #cursor-canvas {
                 display: none !important;
             }
         }
@@ -199,7 +203,7 @@
 
         /* --- HERO --- */
         .hero-title {
-            font-size: clamp(3.5rem, 12vw, 10rem);
+            font-size: clamp(2.5rem, 10vw, 10rem);
             line-height: 0.95;
             letter-spacing: -0.02em;
             color: #fff;
@@ -230,7 +234,7 @@
         }
 
         .big-stat {
-            font-size: clamp(8rem, 25vw, 20rem);
+            font-size: clamp(4rem, 20vw, 20rem);
             font-family: var(--font-code);
             font-weight: 700;
             line-height: 0.8;
@@ -464,28 +468,53 @@
             text-transform: uppercase;
         }
 
-        .hint-line {
-            width: 60px;
-            height: 1px;
-            background: rgba(212, 175, 55, 0.3);
-            position: relative;
+        .hint-arrow-right {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.2rem;
+            animation: bounceRight 1.5s infinite;
         }
 
-        .hint-line::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 30%;
+        @keyframes bounceRight {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            50% {
+                transform: translateX(15px);
+            }
+        }
+
+        .scroll-down-hint-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            width: 50vw;
             height: 100%;
-            background: var(--accent);
-            animation: hintMove 2s infinite ease-in-out;
+            background: linear-gradient(to right, #050505, #0a0a0a);
         }
 
-        @keyframes hintMove {
-            0% { transform: translateX(0); width: 10%; }
-            50% { transform: translateX(200%); width: 40%; }
-            100% { transform: translateX(500%); width: 10%; }
+        .hint-arrow-down {
+            font-size: 2rem;
+            color: var(--accent);
+            animation: bounceDown 1.5s infinite;
+        }
+
+        @keyframes bounceDown {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(15px);
+            }
         }
 
         .collab-note {
@@ -582,15 +611,16 @@
         }
 
         .project-title {
-            font-size: 3rem;
+            font-size: clamp(2rem, 5vw, 3.5rem);
             margin: 0;
+            line-height: 1;
         }
 
         .description {
-            font-size: 1rem;
+            font-size: clamp(0.9rem, 1.2vw, 1.1rem);
             color: #aaa;
-            max-width: 500px;
-            line-height: 1.5;
+            max-width: 600px;
+            line-height: 1.4;
         }
 
         .tech-stack-list {
@@ -978,7 +1008,8 @@
             width: 100vw;
             height: 100vh;
             background: var(--bg);
-            z-index: 100000;
+            z-index: 500000;
+            /* MUST be above #cinematic-intro (200000) */
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -1002,9 +1033,17 @@
         }
 
         @keyframes phoneRotate {
-            0% { transform: rotate(0deg); }
-            50% { transform: rotate(-90deg); }
-            100% { transform: rotate(-90deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            50% {
+                transform: rotate(-90deg);
+            }
+
+            100% {
+                transform: rotate(-90deg);
+            }
         }
 
         #orientation-overlay h2 {
@@ -1025,13 +1064,382 @@
             #orientation-overlay {
                 display: flex;
             }
+
             body {
                 overflow: hidden !important;
             }
         }
 
+        /* --- CINEMATIC INTRO --- */
+        #cinematic-intro {
+            position: relative;
+            /* normal in-flow section, NOT fixed overlay */
+            width: 100%;
+            height: 100vh;
+            min-height: 100vh;
+            background: #050505;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        #cinematic-intro canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .intro-vignette {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, transparent 30%, rgba(0, 0, 0, 0.95) 100%);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .intro-scanlines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(transparent, transparent 2px, rgba(0, 0, 0, 0.03) 2px, rgba(0, 0, 0, 0.03) 4px);
+            pointer-events: none;
+            z-index: 3;
+            opacity: 0.2;
+        }
+
+        /* extra noise layer to match portfolio */
+        #cinematic-intro::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 4;
+            opacity: 0.04;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        }
+
+        .intro-scroll-cue {
+            position: absolute;
+            bottom: 3.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.7rem;
+            z-index: 20;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .intro-scroll-label {
+            font-family: 'Space Grotesk', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: rgba(212, 175, 55, 0.6);
+        }
+
+        .scroll-dot {
+            animation: scrollBounce 1.5s ease-in-out infinite;
+        }
+
+        @keyframes scrollBounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+
+            60% {
+                transform: translateY(10px);
+                opacity: 0.3;
+            }
+        }
+
+        .intro-center {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .intro-eyebrow {
+            font-family: 'Space Grotesk', monospace;
+            font-size: clamp(0.55rem, 1.5vw, 0.8rem);
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            color: rgba(212, 175, 55, 0.6);
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        .intro-svg-wrap {
+            position: relative;
+            width: clamp(280px, 75vw, 900px);
+        }
+
+        .intro-svg-wrap svg {
+            width: 100%;
+            height: auto;
+            overflow: visible;
+        }
+
+        /* The name text rendered as a stroke */
+        .cursive-text {
+            font-family: 'Great Vibes', cursive;
+            font-size: 120px;
+            fill: none;
+            stroke: url(#goldGrad);
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            paint-order: stroke;
+        }
+
+        @media (max-width: 768px) {
+            .cursive-text {
+                font-size: 60px;
+            }
+        }
+
+        /* .pen-glow removed */
+        .intro-tagline {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(0.7rem, 2vw, 1rem);
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            color: rgba(224, 224, 224, 0.7);
+            opacity: 0;
+        }
+
+        .intro-divider {
+            width: 0;
+            height: 1px;
+            background: linear-gradient(to right, transparent, rgba(212, 175, 55, 0.8), transparent);
+            opacity: 0;
+        }
+
+        .intro-skip {
+            position: absolute;
+            bottom: 3rem;
+            right: 4rem;
+            z-index: 20;
+            font-family: 'Space Grotesk', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.6rem 1.4rem;
+            cursor: pointer;
+            background: transparent;
+            transition: color 0.3s, border-color 0.3s;
+            opacity: 0;
+            pointer-events: auto;
+            /* clickable even though parent has pointer-events:none */
+        }
+
+        .intro-skip:hover {
+            color: rgba(212, 175, 55, 0.9);
+            border-color: rgba(212, 175, 55, 0.4);
+        }
+
+        /* Mobile intro layout fixes */
+        @media (max-width: 1024px) {
+
+            /* Skip button: top-right so it never overlaps content */
+            .intro-skip {
+                bottom: auto;
+                top: 1rem;
+                right: 1rem;
+                padding: 0.4rem 0.9rem;
+                font-size: 0.6rem;
+                letter-spacing: 2px;
+            }
+
+            /* Tighten frame border lines & corners */
+            .intro-frame-line.top {
+                top: 1rem;
+                left: 1.5rem;
+                right: 1.5rem;
+            }
+
+            .intro-frame-line.bottom {
+                bottom: 1rem;
+                left: 1.5rem;
+                right: 1.5rem;
+            }
+
+            .intro-frame-line.left {
+                top: 1rem;
+                bottom: 1rem;
+                left: 1.5rem;
+            }
+
+            .intro-frame-line.right {
+                top: 1rem;
+                bottom: 1rem;
+                right: 1.5rem;
+            }
+
+            .intro-corner.tl {
+                top: 1rem;
+                left: 1.5rem;
+            }
+
+            .intro-corner.tr {
+                top: 1rem;
+                right: 1.5rem;
+            }
+
+            .intro-corner.bl {
+                bottom: 1rem;
+                left: 1.5rem;
+            }
+
+            .intro-corner.br {
+                bottom: 1rem;
+                right: 1.5rem;
+            }
+
+            /* Pull scroll cue to clean bottom position */
+            .intro-scroll-cue {
+                bottom: 0.8rem;
+                gap: 0.4rem;
+            }
+
+            .intro-scroll-label {
+                font-size: 0.55rem;
+                letter-spacing: 3px;
+            }
+
+            /* Center block: pad bottom so tagline stays above scroll cue */
+            .intro-center {
+                gap: 0.7rem;
+                padding-bottom: 3.8rem;
+                /* keeps tagline separate from scroll cue */
+                padding-top: 1.5rem;
+                /* keeps eyebrow below the skip button */
+            }
+
+            /* Scale down SVG name on landscape phones */
+            .intro-svg-wrap {
+                width: clamp(200px, 88vw, 650px);
+            }
+
+            .cursive-text {
+                font-size: 70px;
+            }
+
+            .intro-tagline {
+                font-size: 0.58rem;
+                letter-spacing: 4px;
+                text-align: center;
+            }
+
+            .intro-eyebrow {
+                font-size: 0.52rem;
+                letter-spacing: 4px;
+            }
+
+            .intro-divider {
+                max-width: 220px;
+            }
+        }
+
+        .intro-frame-line {
+            position: absolute;
+            background: rgba(212, 175, 55, 0.25);
+        }
+
+        .intro-frame-line.top {
+            top: 2rem;
+            left: 3rem;
+            right: 3rem;
+            height: 1px;
+            transform: scaleX(0);
+            transform-origin: left;
+        }
+
+        .intro-frame-line.bottom {
+            bottom: 2rem;
+            left: 3rem;
+            right: 3rem;
+            height: 1px;
+            transform: scaleX(0);
+            transform-origin: right;
+        }
+
+        .intro-frame-line.left {
+            top: 2rem;
+            bottom: 2rem;
+            left: 3rem;
+            width: 1px;
+            transform: scaleY(0);
+            transform-origin: top;
+        }
+
+        .intro-frame-line.right {
+            top: 2rem;
+            bottom: 2rem;
+            right: 3rem;
+            width: 1px;
+            transform: scaleY(0);
+            transform-origin: bottom;
+        }
+
+        .intro-corner {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border-color: rgba(212, 175, 55, 0.5);
+            border-style: solid;
+            opacity: 0;
+        }
+
+        .intro-corner.tl {
+            top: 2rem;
+            left: 3rem;
+            border-width: 1px 0 0 1px;
+        }
+
+        .intro-corner.tr {
+            top: 2rem;
+            right: 3rem;
+            border-width: 1px 1px 0 0;
+        }
+
+        .intro-corner.bl {
+            bottom: 2rem;
+            left: 3rem;
+            border-width: 0 0 1px 1px;
+        }
+
+        .intro-corner.br {
+            bottom: 2rem;
+            right: 3rem;
+            border-width: 0 1px 1px 0;
+        }
+
         /* --- MOBILE RESPONSIVENESS --- */
-        @media (max-width: 900px) {
+        @media (max-width: 1024px) {
 
             .grid-2,
             .profile-grid,
@@ -1051,20 +1459,14 @@
             }
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 480px) {
             .mobile-scroll-hint {
                 display: flex;
             }
 
             .h-scroll-container {
-                display: block;
-                height: 80vh;
                 width: 100%;
-                overflow-x: auto;
-                overflow-y: hidden;
-                scroll-snap-type: x mandatory;
-                scrollbar-width: none;
-                -ms-overflow-style: none;
+                overflow: hidden;
             }
 
             .h-scroll-container::-webkit-scrollbar {
@@ -1107,7 +1509,7 @@
                 padding: 1.5rem;
                 transform: translateY(0);
                 opacity: 1;
-                background: linear-gradient(to top, rgba(0,0,0,0.95) 40%, transparent);
+                background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 40%, transparent);
             }
 
             .card-img {
@@ -1120,42 +1522,47 @@
             }
 
             #projects-wrapper {
-                margin: 5rem 0; /* More spacing */
+                margin: 5rem 0;
+                /* More spacing */
             }
 
             .project-title {
-                font-size: 0.75rem; /* Drastically reduced */
+                font-size: 0.9rem;
                 margin-top: 0.2rem;
                 letter-spacing: 0.5px;
+                line-height: 1;
+                font-weight: 700;
             }
 
             .description {
-                font-size: 0.5rem; /* Drastically reduced */
-                line-height: 1.15;
-                margin-top: 0.2rem;
-                color: #555;
+                font-size: 0.7rem;
+                line-height: 1.25;
+                margin-top: 0.3rem;
+                color: #888;
+                max-width: 100%;
             }
 
             .card-meta span {
-                font-size: 0.4rem;
-                padding: 1px 3px;
-                letter-spacing: 0.5px;
+                font-size: 0.5rem;
+                padding: 1px 6px;
+                letter-spacing: 1px;
             }
 
             .tech-stack-list {
-                font-size: 0.45rem;
-                gap: 0.3rem;
-                margin-top: 0.3rem;
+                font-size: 0.6rem;
+                gap: 0.4rem;
+                margin-top: 0.6rem;
             }
 
             .btn-link {
-                padding: 0.25rem 0.6rem;
-                font-size: 0.45rem;
-                margin-top: 0.4rem;
+                padding: 0.6rem 1.2rem;
+                font-size: 0.6rem;
+                margin-top: 0.8rem;
             }
 
             .intro-panel h2 {
-                font-size: 1.4rem !important; /* Smaller header */
+                font-size: 1.4rem !important;
+                /* Smaller header */
             }
 
             .intro-panel .mono {
@@ -1163,7 +1570,7 @@
             }
 
             .hero-title {
-                font-size: 15vw;
+                font-size: 12vw;
                 margin-top: 2rem;
             }
 
@@ -1205,7 +1612,7 @@
             }
 
             .card-title {
-                font-size: 1.8rem;
+                font-size: 1.4rem;
             }
         }
     </style>
@@ -1213,10 +1620,86 @@
 
 <body>
 
+    <!-- CINEMATIC INTRO -->
+    <div id="cinematic-intro">
+        <canvas id="intro-canvas"></canvas>
+        <div class="intro-vignette"></div>
+        <div class="intro-scanlines"></div>
+
+        <!-- Frame corners & lines -->
+        <div class="intro-frame-line top"></div>
+        <div class="intro-frame-line bottom"></div>
+        <div class="intro-frame-line left"></div>
+        <div class="intro-frame-line right"></div>
+        <div class="intro-corner tl"></div>
+        <div class="intro-corner tr"></div>
+        <div class="intro-corner bl"></div>
+        <div class="intro-corner br"></div>
+
+        <div class="intro-center">
+            <div class="intro-eyebrow">Portfolio of</div>
+
+            <div class="intro-svg-wrap">
+                <!-- SVG gradient & glow filter -->
+                <svg id="intro-svg" viewBox="0 0 900 220" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#c8993a" />
+                            <stop offset="40%" stop-color="#f4d160" />
+                            <stop offset="70%" stop-color="#d4af37" />
+                            <stop offset="100%" stop-color="#a07820" />
+                        </linearGradient>
+                        <filter id="soft-glow" x="-20%" y="-50%" width="140%" height="200%">
+                            <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
+                            <feMerge>
+                                <feMergeNode in="blur" />
+                                <feMergeNode in="SourceGraphic" />
+                            </feMerge>
+                        </filter>
+                        <filter id="name-glow" x="-10%" y="-40%" width="120%" height="180%">
+                            <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur" />
+                            <feMerge>
+                                <feMergeNode in="blur" />
+                                <feMergeNode in="blur" />
+                                <feMergeNode in="SourceGraphic" />
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    <!-- Glow copy behind (blur layer) -->
+                    <text class="cursive-text" filter="url(#name-glow)" opacity="0.5" x="450" y="160"
+                        text-anchor="middle">Muhammad Hasan</text>
+                    <!-- Main visible text -->
+                    <text id="intro-name-text" class="cursive-text" x="450" y="160" text-anchor="middle">Muhammad
+                        Hasan</text>
+                </svg>
+            </div>
+
+            <div class="intro-divider" id="intro-divider"></div>
+            <div class="intro-tagline">Full Stack Creative Developer &nbsp;·&nbsp; 14 y/o</div>
+        </div>
+
+        <!-- Scroll cue -->
+        <div class="intro-scroll-cue" id="intro-scroll-cue">
+            <span class="intro-scroll-label">Scroll to Explore</span>
+            <div class="intro-scroll-arrow">
+                <svg width="16" height="28" viewBox="0 0 16 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="1" y="1" width="14" height="22" rx="7" stroke="rgba(212,175,55,0.5)" stroke-width="1.2" />
+                    <circle class="scroll-dot" cx="8" cy="7" r="2.5" fill="#d4af37" />
+                </svg>
+            </div>
+        </div>
+
+        <button class="intro-skip" id="intro-skip">Skip &nbsp;→</button>
+    </div>
+
     <!-- ORIENTATION OVERLAY -->
     <div id="orientation-overlay">
         <div class="orientation-content">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                <line x1="12" y1="18" x2="12.01" y2="18"></line>
+            </svg>
             <h2>Please Rotate Device</h2>
             <p>This experience is optimized for horizontal viewing. Kindly rotate your device for the best view.</p>
         </div>
@@ -1235,24 +1718,7 @@
         <div class="mono">AVAILABLE FOR WORK</div>
     </nav>
 
-    <!-- 1. HERO -->
-    <section class="fullscreen">
-        <div style="z-index: 10;">
-            <div class="mono" style="margin-bottom: 1.5rem; color: var(--accent); letter-spacing: 3px;">FULL STACK
-                CREATIVE</div>
-            <h1 class="hero-title">MUHAMMAD HASAN</h1>
-        </div>
-        <div class="hero-meta">
-            <div>
-                <div class="mono" style="color:var(--text-muted)">LOCATION</div>
-                <div>Worldwide / Remote</div>
-            </div>
-            <div>
-                <div class="mono" style="color:var(--text-muted)">SPECIALTY</div>
-                <div>Interactive WebGL</div>
-            </div>
-        </div>
-    </section>
+    <!-- 1. HERO removed — cinematic intro serves as hero -->
 
     <!-- 2. IDENTITY -->
     <section class="fullscreen">
@@ -1427,11 +1893,11 @@
                     <h2 style="font-size: 4rem;">Selected<br>Works</h2>
                     <div class="mono" style="margin-top: 2rem;">(04) PROJECTS</div>
                     <div class="mono" style="margin-top: 0.5rem;">→ SCROLL TO EXPLORE</div>
-                    
+
                     <!-- Mobile Scroll Hint -->
                     <div class="mobile-scroll-hint">
                         <span class="hint-text">Scroll Right</span>
-                        <div class="hint-line"></div>
+                        <div class="hint-arrow-right">→</div>
                     </div>
                 </div>
 
@@ -1475,7 +1941,8 @@
                             <h3 class="project-title">Meridian Arch Studio</h3>
                             <p class="description">A premium architectural portfolio website showcasing modern
                                 residential and commercial projects with a clean, minimal aesthetic.</p>
-                            <div class="tech-stack-list"><span>HTML</span><span>CSS</span><span>JavaScript</span></div>
+                            <div class="tech-stack-list"><span>REACT</span><span>TAILWIND CSS</span><span>GSAP</span>
+                            </div>
                             <a href="https://hsf237.github.io/meridianarchstudio.in/" class="btn-link">VIEW PROJECT
                                 →</a>
                         </div>
@@ -1497,7 +1964,20 @@
                     </div>
                 </div>
 
-                <div class="h-panel" style="width: 20vw;"></div>
+                <div class="h-panel scroll-down-hint-panel">
+                    <div class="mono" style="color: var(--text-muted); font-size: 0.6rem; letter-spacing: 3px;">END OF
+                        WORKS</div>
+                    <div class="hint-text" style="color: #fff; font-size: 0.8rem;">KEEP EXPLORING</div>
+                    <div class="hint-arrow-down">↓</div>
+                    <div class="mono" style="color: var(--accent); font-size: 0.5rem; margin-top: 1rem;">SCROLL DOWN
+                    </div>
+
+                    <!-- Back hint -->
+                    <div
+                        style="position: absolute; left: 2rem; bottom: 2rem; display: flex; align-items: center; gap: 0.5rem; opacity: 0.4;">
+                        <div class="mono" style="font-size: 0.5rem;">← PROJECTS</div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -1715,6 +2195,163 @@
 
     <!-- SCRIPTS -->
     <script>
+        /* ============================================================
+           CINEMATIC INTRO SEQUENCE
+        ============================================================ */
+        (function runCinematicIntro() {
+            const intro = document.getElementById('cinematic-intro');
+            const nameText = document.getElementById('intro-name-text');
+            const skipBtn = document.getElementById('intro-skip');
+            const divider = document.getElementById('intro-divider');
+            const svgEl = document.getElementById('intro-svg');
+            const scrollCue = document.getElementById('intro-scroll-cue');
+
+            /* === Always scroll to top on every load/refresh === */
+            history.scrollRestoration = 'manual';
+            window.scrollTo(0, 0);
+
+            /* === Orientation check ===
+               Desktop (width > 1024): always ok.
+               Mobile/tablet: must be landscape (width > height).
+            */
+            function isAllowedOrientation() {
+                if (window.innerWidth > 1024) return true;
+                return window.innerWidth > window.innerHeight;
+            }
+
+            /* === Reset all animated elements to initial (pre-animation) state === */
+            function resetIntroState() {
+                gsap.killTweensOf([
+                    '.intro-frame-line', '.intro-corner', '.intro-eyebrow',
+                    '#intro-skip', nameText, svgEl.querySelectorAll('.cursive-text')[0],
+                    divider, '.intro-tagline', scrollCue
+                ]);
+                gsap.set('.intro-frame-line.top, .intro-frame-line.bottom', { scaleX: 0 });
+                gsap.set('.intro-frame-line.left, .intro-frame-line.right', { scaleY: 0 });
+                gsap.set('.intro-corner', { opacity: 0 });
+                gsap.set('.intro-eyebrow', { opacity: 0, y: -10 });
+                gsap.set('#intro-skip', { opacity: 0 });
+                gsap.set(divider, { width: 0, opacity: 0 });
+                gsap.set('.intro-tagline', { opacity: 0 });
+                gsap.set(scrollCue, { opacity: 0 });
+                /* Reset stroke draw */
+                const glowCopy = svgEl.querySelectorAll('.cursive-text')[0];
+                const len = nameText.getTotalLength ? nameText.getTotalLength() : 3000;
+                nameText.style.strokeDasharray = len;
+                nameText.style.strokeDashoffset = len;
+                if (glowCopy) {
+                    glowCopy.style.strokeDasharray = len;
+                    glowCopy.style.strokeDashoffset = len;
+                }
+            }
+
+            /* === Stroke animation === */
+            let currentTl = null;
+            function measureAndAnimate() {
+                requestAnimationFrame(() => {
+                    const len = nameText.getTotalLength
+                        ? nameText.getTotalLength()
+                        : 3000;
+
+                    nameText.style.strokeDasharray = len;
+                    nameText.style.strokeDashoffset = len;
+                    const glowCopy = svgEl.querySelectorAll('.cursive-text')[0];
+                    if (glowCopy) {
+                        glowCopy.style.strokeDasharray = len;
+                        glowCopy.style.strokeDashoffset = len;
+                    }
+
+                    if (currentTl) currentTl.kill();
+                    currentTl = gsap.timeline();
+
+                    /* 1. Frame lines */
+                    currentTl
+                        .to('.intro-frame-line.top, .intro-frame-line.bottom', { scaleX: 1, duration: 0.7, ease: 'power2.out' })
+                        .to('.intro-frame-line.left, .intro-frame-line.right', { scaleY: 1, duration: 0.5, ease: 'power2.out' }, '-=0.4')
+                        .to('.intro-corner', { opacity: 1, duration: 0.3, stagger: 0.05 }, '-=0.3')
+                        /* 2. Eyebrow */
+                        .to('.intro-eyebrow', { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }, '-=0.1')
+                        /* 3. Skip btn */
+                        .to('#intro-skip', { opacity: 1, duration: 0.5 }, '+=0.1')
+                        /* 4. Write name */
+                        .to([nameText, glowCopy], { strokeDashoffset: 0, duration: 3.8, ease: 'power1.inOut' }, '+=0.2')
+                        /* 5. Divider */
+                        .to(divider, { width: '100%', opacity: 1, duration: 0.9, ease: 'power3.out' }, '-=0.3')
+                        /* 6. Tagline */
+                        .to('.intro-tagline', { opacity: 1, duration: 1, ease: 'power2.out' }, '-=0.4')
+                        /* 7. Scroll cue */
+                        .to(scrollCue, { opacity: 1, duration: 0.8, ease: 'power2.out' }, '+=0.3');
+
+                    skipBtn.onclick = () => { currentTl.progress(1); };
+                });
+            }
+
+            /* === Particle canvas === */
+            const icanvas = document.getElementById('intro-canvas');
+            const ictx = icanvas.getContext('2d');
+            function resizeICanvas() {
+                icanvas.width = window.innerWidth;
+                icanvas.height = window.innerHeight;
+            }
+            resizeICanvas();
+            window.addEventListener('resize', resizeICanvas);
+
+            const iParticles = [];
+            for (let i = 0; i < 120; i++) {
+                iParticles.push({
+                    x: Math.random() * window.innerWidth,
+                    y: Math.random() * window.innerHeight,
+                    r: Math.random() * 1.5 + 0.3,
+                    vx: (Math.random() - 0.5) * 0.25,
+                    vy: (Math.random() - 0.5) * 0.25,
+                    alpha: Math.random() * 0.5 + 0.1,
+                    gold: Math.random() > 0.6
+                });
+            }
+            function drawIParticles() {
+                ictx.clearRect(0, 0, icanvas.width, icanvas.height);
+                iParticles.forEach(p => {
+                    p.x += p.vx; p.y += p.vy;
+                    if (p.x < 0) p.x = icanvas.width; if (p.x > icanvas.width) p.x = 0;
+                    if (p.y < 0) p.y = icanvas.height; if (p.y > icanvas.height) p.y = 0;
+                    ictx.beginPath();
+                    ictx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ictx.fillStyle = p.gold ? `rgba(212,175,55,${p.alpha})` : `rgba(255,255,255,${p.alpha * 0.5})`;
+                    ictx.fill();
+                });
+                requestAnimationFrame(drawIParticles);
+            }
+            drawIParticles();
+
+            /* === Orientation tracking — restart animation every portrait→landscape === */
+            let prevWasPortrait = !isAllowedOrientation();
+
+            function handleOrientationChange() {
+                const nowAllowed = isAllowedOrientation();
+                if (nowAllowed && prevWasPortrait) {
+                    /* Rotated to landscape — reset and restart */
+                    prevWasPortrait = false;
+                    resetIntroState();
+                    document.fonts.ready.then(() => setTimeout(measureAndAnimate, 300));
+                } else if (!nowAllowed) {
+                    /* Rotated back to portrait — mark it */
+                    prevWasPortrait = true;
+                    if (currentTl) currentTl.pause();
+                }
+            }
+
+            window.addEventListener('orientationchange', () => setTimeout(handleOrientationChange, 350));
+            window.addEventListener('resize', handleOrientationChange);
+
+            /* === Initial kick-off === */
+            document.fonts.ready.then(() => {
+                if (isAllowedOrientation()) {
+                    setTimeout(measureAndAnimate, 200);
+                }
+                /* else: orientation overlay is showing, handler will fire when rotated */
+            });
+        })();
+
         gsap.registerPlugin(ScrollTrigger);
 
         const splitText = (el) => {
@@ -1815,13 +2452,10 @@
 
             gsap.ticker.add(handleParticles);
 
-            document.querySelectorAll(".hero-title").forEach(t => splitText(t));
-            const heroTl = gsap.timeline({ delay: 0.5 });
-            heroTl.to(".hero-title .char-reveal span", { y: "0%", stagger: 0.03, duration: 1.5, ease: "expo.out" })
-                .from(".hero-meta", { opacity: 0, y: 30, duration: 1.5, ease: "power4.out" }, "-=1");
+            /* Hero section replaced by cinematic intro — no splitText needed here */
 
             const mm = gsap.matchMedia();
-            mm.add("(min-width: 769px)", () => {
+            mm.add("(min-width: 0px)", () => {
                 const track = document.querySelector(".h-track");
                 const sections = gsap.utils.toArray(".h-panel");
                 const scrollTween = gsap.to(track, {
